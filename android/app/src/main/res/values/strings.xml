@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">UDAWA</string>
+    <string name="title_activity_main">UDAWA</string>
+    <string name="package_name">org.udawa.device</string>
+    <string name="custom_url_scheme">org.udawa.device</string>
+</resources>
