@@ -37,20 +37,39 @@ export class DashboardVayusComponent implements OnInit, OnDestroy, OnChanges{
   alarmCode = 0;
   alarmMsg = {
     "0": "No alarm message.",
-    "999": "The device has rebooted. Please check your device's operation condition to make sure no such problem is causing the reboot.",
-    "110": "The light sensor failed to initialize; please check the module integration and wiring.",
-    "111": "The light sensor measurement is abnormal; please check the module integrity.",
-    "112": "The light sensor measurement is showing an extreme value; please monitor the device's operation closely.",
-    "120": "The weather sensor failed to initialize; please check the module integration and wiring.",
-    "121": "The weather sensor measurement is abnormal; The ambient temperature is out of range.",
-    "122": "The weather sensor measurement is showing an extreme value; The ambient temperature is exceeding 40°C; please monitor the device's operation closely.",
-    "123": "The weather sensor measurement is showing an extreme value; The ambient temperature is less than 17°C; please monitor the device's operation closely.",
-    "124": "The weather sensor measurement is abnormal; The ambient humidity is out of range.",
-    "125": "The weather sensor measurement is showing an extreme value; The ambient humidity is nearly 100%; please monitor the device's operation closely.",
-    "126": "The weather sensor measurement is showing an extreme value; The ambient humidity is below 20%; please monitor the device's operation closely.",
-    "127": "The weather sensor measurement is abnormal; The barometric pressure is out of range.",
-    "128": "The weather sensor measurement is showing an extreme value; The barometric pressure is more than 1010hPa; please monitor the device's operation closely.",
-    "129": "The weather sensor measurement is showing an extreme value; The barometric pressure is less than 100hPa; please monitor the device's operation closely."
+    "110": "The light sensor failed to initialize; please check the module integration and wiring",
+    "111": "The light sensor measurement is abnormal; please check the module integrity",
+    "112": "The light sensor measurement is showing an extreme value; please monitor the device's operation closely",
+    "120": "The weather sensor failed to initialize; please check the module integration and wiring",
+    "121": "The weather sensor measurement is abnormal; The ambient temperature is out of range",
+    "122": "The weather sensor measurement is showing an extreme value; The ambient temperature is exceeding 40°C; please monitor the device's operation closely",
+    "123": "The weather sensor measurement is showing an extreme value; The ambient temperature is less than 17°C; please monitor the device's operation closely",
+    "124": "The weather sensor measurement is abnormal; The ambient humidity is out of range",
+    "125": "The weather sensor measurement is showing an extreme value; The ambient humidity is nearly 100%; please monitor the device's operation closely",
+    "126": "The weather sensor measurement is showing an extreme value; The ambient humidity is below 20%; please monitor the device's operation closely",
+    "127": "The weather sensor measurement is abnormal; The barometric pressure is out of range",
+    "128": "The weather sensor measurement is showing an extreme value; The barometric pressure is more than 1010hPa; please monitor the device's operation closely",
+    "129": "The weather sensor measurement is showing an extreme value; The barometric pressure is less than 100hPa; please monitor the device's operation closely",
+    "130": "The SD Card failed to initialize; please check the module integration and wiring",
+    "131": "The SD Card failed to attatch; please check if the card is inserted properly",
+    "132": "The SD Card failed to create log file; please check if the card is ok",
+    "133": "The SD Card failed to write to the log file; please check if the card is ok",
+    "140": "The power sensor failed to initialize; please check the module integration and wiring",
+    "141": "The power sensor measurement is abnormal; The voltage reading is out of range",
+    "142": "The power sensor measurement is abnormal; The current reading is out of range",
+    "143": "The power sensor measurement is abnormal; The power reading is out of range",
+    "144": "The power sensor measurement is abnormal; The power factor and frequency reading is out of range",
+    "145": "The power sensor measurement is showing an overlimit; Please check the connected instruments",
+    "150": "The device timing information is incorrect; please update the device time manually. Any function that requires precise timing will malfunction!",
+    "211": "Switch number one is active, but the power sensor detects no power utilization. Please check the connected instrument to prevent failures",
+    "212": "Switch number two is active, but the power sensor detects no power utilization. Please check the connected instrument to prevent failures",
+    "213": "Switch number three is active, but the power sensor detects no power utilization. Please check the connected instrument to prevent failures",
+    "214": "Switch number four is active, but the power sensor detects no power utilization. Please check the connected instrument to prevent failures",
+    "215": "All switches are inactive, but the power sensor detects large power utilization. Please check the device relay module to prevent relay malfunction.",
+    "216": "Switch numner one is active for more than one hour!",
+    "217": "Switch number two is active for more than one hour!",
+    "218": "Switch number three is active for more than one hour!",
+    "219": "Switch number four is active for more than one hour!"
   }
   
 
@@ -218,7 +237,7 @@ export class DashboardVayusComponent implements OnInit, OnDestroy, OnChanges{
         }
 
         if(lineCounter >= lineCount){
-          this.logLoadTS = "It's done! " + lineCount + " record(s)";
+          this.logLoadTS = "It's done! " + (lineCount - 1) + " record(s)";
         }
       });
 

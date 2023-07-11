@@ -1,14 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { WebsocketService } from '../websocket.service';
 import { Router } from '@angular/router';
+import { Network } from '@capacitor/network';
+
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
-  public serverAddress = '';
+
+export class LoginComponent implements OnInit{
+  public deviceAddress = '';
   public apiKey = '';
   public message = {status: {code: 0, msg: ''}};
 
@@ -17,8 +20,12 @@ export class LoginComponent {
     private router: Router
   ) { }
 
+  ngOnInit(): void {
+    
+  }
+
   public login(): void {
-    this.wsService.initialize(this.serverAddress, this.apiKey);
+    this.wsService.initialize(this.deviceAddress, this.apiKey);
     this.wsService.connect().subscribe({
       next: (msg) => {
         if (msg && msg.status && msg.status.code != null && msg.status.code === 200 && msg.status.model && msg.status.model == 'VAYUS') {

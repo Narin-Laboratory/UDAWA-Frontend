@@ -3,6 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { Routes, RouterModule } from '@angular/router';
 import { WebsocketGuard } from './websocket.guard';
+import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+
 
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +17,7 @@ import { ChartistModule } from "ng-chartist";
 import { ChartLineComponent } from './chart-line/chart-line.component';
 import { LoginComponent } from './login/login.component';
 import { NgChartsModule } from 'ng2-charts';
+import { AutofillDirective } from './autofill.directive';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -31,9 +34,11 @@ const routes: Routes = [
     CardSensorComponent,
     CardSwitchComponent,
     ChartLineComponent,
-    LoginComponent
+    LoginComponent,
+    AutofillDirective
   ],
   imports: [
+    IonicModule.forRoot(),
     BrowserModule,
     NgChartsModule,
     FormsModule,

@@ -13,11 +13,11 @@
     <form (submit)="login()">
     <label>
         Server Address:
-        <input [(ngModel)]="serverAddress" name="serverAddress">
+        <input appAutofill [(ngModel)]="deviceAddress" name="username" type="text" autocomplete="on" required>
     </label>
     <label>
         API Key:
-        <input [(ngModel)]="apiKey" name="apiKey" type="password">
+        <input appAutofill [(ngModel)]="apiKey" name="password" type="password" autocomplete="on" required>
     </label>
     <button type="submit">Login</button>
     </form>
