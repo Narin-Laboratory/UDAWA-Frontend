@@ -1,9 +1,0 @@
-::ng-deep .button-update {
-    width: 75px;
-    background-color: green;
-    padding: 5px 10px;
-    color: white;
-    text-align: center;
-    border-radius: 20px;
-    cursor: grab;
-}
