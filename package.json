@@ -1,27 +1,44 @@
 {
   "name": "udawa",
   "version": "0.0.1",
-  "main": "main.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --base-href ./ ",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "electron-build": "ng build --base-href ./ && electron .",
-    "dist": "electron-builder --win"
+    "electron": "electron .",
+    "dist-win": "electron-builder --win",
+    "dist-linux": "electron-builder --linux"
   },
-  "author": "PRITA Research Group",
+  "author": "John Doe <john@doe.com>",
   "productName": "UDAWA",
   "description": "The single app for multiple UDAWA Smart System device interface.",
+  "private": true,
+  "main": "main.js",
   "build": {
+    "directories": {
+        "output": "release",
+        "buildResources": "dist"
+    },
+    "asar":false,
     "appId": "org.udawa.device",
     "win": {
-      "target": "portable",
-      "icon": "src/assets/img/logo.ico"
+        "target": "portable",
+        "icon": "src/assets/img/logo.ico"
+    },
+    "linux": {
+        "target": "deb",
+        "icon": "src/assets/img/logo.png",
+        "executableName": "udawa",
+        "category": "GNOME;GTK;Network;InstantMessaging",
+        "desktop": {
+          "StartupWMClass": "udawa",
+          "MimeType": "x-scheme-handler/udawa"
+        },
+        "artifactName": "udawa-${version}-${os}-${arch}.${ext}"
     }
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^16.1.2",
     "@angular/cdk": "^16.1.2",

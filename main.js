@@ -5,11 +5,11 @@ function createWindow () {
     width: 1280,
     height: 800,
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: true
     }
   })
 
-  win.loadFile('dist/udawa/index.html')
+  win.loadURL(`file://${__dirname}/out/udawa/index.html`)
 
   win.once('ready-to-show', () => {
     win.maximize();
