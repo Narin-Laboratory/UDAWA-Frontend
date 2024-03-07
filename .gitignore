@@ -9,10 +9,6 @@
 .history
 .svn/
 migrate_working_dir/
-.angular
-out
-dist
-release
 
 # IntelliJ related
 *.iml
@@ -31,7 +27,6 @@ release
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
-.packages
 .pub-cache/
 .pub/
 /build/
@@ -46,4 +41,3 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-node_modules

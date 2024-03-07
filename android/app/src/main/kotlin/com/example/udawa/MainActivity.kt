@@ -1,6 +1,5 @@
-package com.example.udawa
+package org.udawa
 
 import io.flutter.embedding.android.FlutterActivity
 
-class MainActivity: FlutterActivity() {
-}
+class MainActivity: FlutterActivity()
