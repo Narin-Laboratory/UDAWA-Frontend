@@ -47,4 +47,10 @@ final class WebSocketMessageReadyDeviceConfig extends WebSocketState {
   WebSocketMessageReadyDeviceConfig({required this.config});
 }
 
+final class WebSocketMessageReadyDamodarSensors extends WebSocketState {
+  final DamodarSensors damodarSensors;
+
+  WebSocketMessageReadyDamodarSensors({required this.damodarSensors});
+}
+
 final class WebSocketDisconnect extends WebSocketState {}

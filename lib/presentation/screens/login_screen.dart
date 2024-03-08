@@ -1,10 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localization/flutter_localization.dart';
 import 'package:udawa/bloc/auth_bloc.dart';
 import 'package:udawa/bloc/websocket_bloc.dart';
-import 'package:udawa/localization/locales.dart';
 import 'package:udawa/models/mdns_device_model.dart';
 import 'package:udawa/presentation/screens/damodar_dashboard_screen.dart';
 import 'package:udawa/presentation/screens/vanilla_dashboard_screen.dart';
@@ -23,23 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
   String _textLog = '';
 
   bool _isConnectButtonDisabled = false;
-
-  late FlutterLocalization _flutterLocalization;
-  late String _currentLocale;
-
-  void _setLocale(String? value) {
-    if (value == null) return;
-
-    if (value == "en") {
-      _flutterLocalization.translate("en");
-    } else if (value == "id") {
-      _flutterLocalization.translate("id");
-    }
-
-    setState(() {
-      _currentLocale = value;
-    });
-  }
 
   void _handleConnectButtonClick() {
     if (!_isConnectButtonDisabled) {
@@ -66,8 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    _flutterLocalization = FlutterLocalization.instance;
-    _currentLocale = _flutterLocalization.currentLocale!.languageCode;
     super.initState();
   }
 
@@ -111,192 +90,157 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       builder: (context, state) {
         return Scaffold(
-            appBar: AppBar(
-              actions: [
-                DropdownButton(
-                    value: "",
-                    items: [
-                      DropdownMenuItem(
-                        value: "",
-                        child:
-                            Text(localeData.changeLanguage.getString(context)),
-                      ),
-                      const DropdownMenuItem(
-                        value: "en",
-                        child: Text("English"),
-                      ),
-                      const DropdownMenuItem(
-                        value: "id",
-                        child: Text("Bahasa Indonesia"),
-                      )
-                    ],
-                    onChanged: (value) {
-                      _setLocale(value);
-                    })
-              ],
-            ),
             body: BlocConsumer<AuthBloc, AuthState>(
-              listener: (context, state) {
-                if (state is AuthLocalError) {
-                  setState(() {
-                    _textLog = state.error;
-                    _isConnectButtonDisabled = false;
-                  });
-                }
+          listener: (context, state) {
+            if (state is AuthLocalError) {
+              setState(() {
+                _textLog = state.error;
+                _isConnectButtonDisabled = false;
+              });
+            }
 
-                if (state is AuthLocalOnProcess) {
-                  setState(() {
-                    if (state.message == "authLocalOnProcessSending") {
-                      _textLog = localeData.authLocalOnProcessSending
-                          .getString(context);
-                    }
-                    if (state.message == "authLocalOnProcessSending") {
-                      _textLog = localeData.authLocalOnProcessSending
-                          .getString(context);
-                    }
-                    _isConnectButtonDisabled = true;
-                  });
-                }
+            if (state is AuthLocalOnProcess) {
+              setState(() {
+                _textLog = state.message;
+                _isConnectButtonDisabled = true;
+              });
+            }
 
-                if (state is AuthLocalSuccess) {
-                  setState(() {
-                    _textLog = "Connected! Redirecting to dashboard...";
-                  });
+            if (state is AuthLocalSuccess) {
+              setState(() {
+                _textLog = "Connected! Redirecting to dashboard...";
+              });
 
-                  final model = state.model?['status']?['model'] ?? -1;
+              final model = state.model?['status']?['model'] ?? -1;
 
-                  if (model == 'Vanilla') {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const VanillaDashboardScreen()),
-                      (route) => false,
-                    );
-                  } else if (model == 'Gadadar') {
-                  } else if (model == 'Damodar') {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const DamodarDashboardScreen()),
-                      (route) => false,
-                    );
-                  } else if (model == 'Sudarsan') {}
-                }
-              },
-              builder: (context, state) {
-                return Scaffold(
-                    // Assuming you want to position it within a standard screen layout
-                    body: LayoutBuilder(builder: (context, constraints) {
-                  double maxWidth =
-                      constraints.maxWidth > 800 ? 800 : constraints.maxWidth;
-                  return Center(
-                    // Center the content within the Scaffold's body
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: maxWidth),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisAlignment:
-                                MainAxisAlignment.center, // Center vertically
+              if (model == 'Vanilla') {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const VanillaDashboardScreen()),
+                  (route) => false,
+                );
+              } else if (model == 'Gadadar') {
+              } else if (model == 'Damodar') {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const DamodarDashboardScreen()),
+                  (route) => false,
+                );
+              } else if (model == 'Sudarsan') {}
+            }
+          },
+          builder: (context, state) {
+            return Scaffold(
+                // Assuming you want to position it within a standard screen layout
+                body: LayoutBuilder(builder: (context, constraints) {
+              double maxWidth =
+                  constraints.maxWidth > 800 ? 800 : constraints.maxWidth;
+              return Center(
+                // Center the content within the Scaffold's body
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxWidth),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment:
+                            MainAxisAlignment.center, // Center vertically
+                        children: [
+                          SizedBox(
+                            width: 90.0, // Set your desired width
+                            height: 90.0, // Set your desired height
+                            child: Image.asset('assets/images/logo.png'),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text("UDAWA Smart System",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w100,
+                                fontSize: 22,
+                                color: Colors.green,
+                              )),
+                          const SizedBox(height: 15),
+                          LoginField(
+                            labelText: "Device IP Address",
+                            onChanged: (value) {},
+                            controller: deviceIpAddressController,
+                          ),
+                          const SizedBox(height: 15),
+                          LoginField(
+                            labelText: "Web Api Key",
+                            obscureText: true,
+                            onChanged: (value) {},
+                            controller: webApiKeyController,
+                          ),
+                          const SizedBox(height: 25),
+                          Row(
                             children: [
-                              SizedBox(
-                                width: 90.0, // Set your desired width
-                                height: 90.0, // Set your desired height
-                                child: Image.asset('assets/images/logo.png'),
-                              ),
-                              const SizedBox(height: 10),
-                              const Text("UDAWA Smart System",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w100,
-                                    fontSize: 22,
-                                    color: Colors.green,
-                                  )),
-                              const SizedBox(height: 15),
-                              LoginField(
-                                labelText: "Device IP Address",
-                                onChanged: (value) {},
-                                controller: deviceIpAddressController,
-                              ),
-                              const SizedBox(height: 15),
-                              LoginField(
-                                labelText: "Web Api Key",
-                                obscureText: true,
-                                onChanged: (value) {},
-                                controller: webApiKeyController,
-                              ),
-                              const SizedBox(height: 25),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: TextButton.icon(
-                                        onPressed: kIsWeb
-                                            ? null
-                                            : () async {
-                                                final selectedDevice =
-                                                    await showDialog<
-                                                        MdnsDevice>(
-                                                  context: context,
-                                                  builder: (context) =>
-                                                      const SelectionPopup(),
-                                                );
+                              Expanded(
+                                child: TextButton.icon(
+                                    onPressed: kIsWeb
+                                        ? null
+                                        : () async {
+                                            final selectedDevice =
+                                                await showDialog<MdnsDevice>(
+                                              context: context,
+                                              builder: (context) =>
+                                                  const SelectionPopup(),
+                                            );
 
-                                                if (selectedDevice != null) {
-                                                  // Do something with the selectedItem
-                                                  deviceIpAddressController
-                                                          .text =
-                                                      selectedDevice
-                                                          .address.address;
-                                                }
-                                              },
-                                        icon: const Icon(Icons.search),
-                                        label: Text(localeData.scanButton
-                                            .getString(context))),
-                                  ),
-                                  const SizedBox(
-                                      width: 10), // Add spacing between buttons
-                                  Expanded(
-                                    child: ElevatedButton.icon(
-                                        onPressed: _isConnectButtonDisabled
-                                            ? null
-                                            : _handleConnectButtonClick,
-                                        icon: const Icon(Icons
-                                            .connect_without_contact_sharp),
-                                        label: Text(localeData.connectButton
-                                            .getString(context))),
-                                  ),
-                                ],
+                                            if (selectedDevice != null) {
+                                              // Do something with the selectedItem
+                                              deviceIpAddressController.text =
+                                                  selectedDevice
+                                                      .address.address;
+                                            }
+                                          },
+                                    icon: const Icon(Icons.search),
+                                    label: const Text("Scan")),
                               ),
-                              const SizedBox(height: 25),
-                              if (_textLog
-                                  .isNotEmpty) // Check if there's a log message
-                                SizedBox(
-                                  height: 50,
-                                  child: Center(
-                                    // Add the Center widget here
-                                    child: Row(
-                                      children: [
-                                        if (state is AuthLocalOnProcess)
-                                          const SizedBox(
-                                            width: 20,
-                                            height: 20,
-                                            child: CircularProgressIndicator(),
-                                          ),
-                                        const SizedBox(width: 10),
-                                        Expanded(child: Text(_textLog)),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                              const SizedBox(
+                                  width: 10), // Add spacing between buttons
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                    onPressed: _isConnectButtonDisabled
+                                        ? null
+                                        : _handleConnectButtonClick,
+                                    icon: const Icon(
+                                        Icons.connect_without_contact_sharp),
+                                    label: const Text("Connect")),
+                              ),
                             ],
                           ),
-                        ),
+                          const SizedBox(height: 25),
+                          if (_textLog
+                              .isNotEmpty) // Check if there's a log message
+                            SizedBox(
+                              height: 50,
+                              child: Center(
+                                // Add the Center widget here
+                                child: Row(
+                                  children: [
+                                    if (state is AuthLocalOnProcess)
+                                      const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    const SizedBox(width: 10),
+                                    Expanded(child: Text(_textLog)),
+                                  ],
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
-                  );
-                }));
-              },
-            ));
+                  ),
+                ),
+              );
+            }));
+          },
+        ));
       },
     );
   }

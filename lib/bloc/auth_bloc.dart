@@ -102,7 +102,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         'auth': auth,
       };
 
-      emit(AuthLocalOnProcess(message: "authLocalOnProcessSending"));
+      emit(AuthLocalOnProcess(message: "Connecting to device..."));
       webSocketService.send(authObject);
     } catch (error) {
       emit(AuthLocalError(error: error.toString()));

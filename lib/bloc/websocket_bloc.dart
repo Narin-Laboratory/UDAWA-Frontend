@@ -2,6 +2,7 @@
 import 'package:bloc/bloc.dart';
 // ignore: depend_on_referenced_packages
 import 'package:meta/meta.dart';
+import 'package:udawa/models/damodar_sensors_model.dart';
 import 'package:udawa/models/device_attributes_model.dart';
 import 'package:udawa/models/device_config_model.dart';
 import 'package:udawa/models/device_telemetry_model.dart';
@@ -29,7 +30,7 @@ class WebSocketBloc extends Bloc<WebSocketEvent, WebSocketState> {
   void _onWebSocketOnMessage(
       WebSocketOnMessage event, Emitter<WebSocketState> emit) {
     try {
-      print(event.message);
+      //print(event.message);
       // Handle message if not null
       if (event.message != null) {
         if (event.message?['status'] != null) {
@@ -51,6 +52,11 @@ class WebSocketBloc extends Bloc<WebSocketEvent, WebSocketState> {
           final DeviceConfig config =
               DeviceConfig.fromJson(event.message['cfg']);
           emit(WebSocketMessageReadyDeviceConfig(config: config));
+        } else if (event.message?['damodarSensors'] != null) {
+          final DamodarSensors damodarSensors =
+              DamodarSensors.fromJson(event.message['damodarSensors']);
+          emit(WebSocketMessageReadyDamodarSensors(
+              damodarSensors: damodarSensors));
         }
       }
 

@@ -1,6 +1,8 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:udawa/bloc/websocket_bloc.dart';
+import 'package:udawa/models/damodar_sensors_model.dart';
 import 'package:udawa/models/device_attributes_model.dart';
 import 'package:udawa/models/device_config_model.dart';
 import 'package:udawa/models/device_telemetry_model.dart';
@@ -9,6 +11,7 @@ import 'package:udawa/presentation/widgets/appbar_widget.dart';
 import 'package:udawa/presentation/widgets/device_attributes_widget.dart';
 import 'package:udawa/presentation/widgets/device_config_widget.dart';
 import 'package:udawa/presentation/widgets/device_telemetry_widget.dart';
+import 'package:udawa/presentation/widgets/generic_line_chart_widget.dart';
 import 'package:udawa/presentation/widgets/water_tds_widget.dart';
 import 'package:udawa/presentation/widgets/water_temperature_widget.dart';
 
@@ -25,6 +28,10 @@ class _VanillaDashboardScreenState extends State<DamodarDashboardScreen> {
   DeviceTelemetry devTel = DeviceTelemetry();
   DeviceAttributes attr = DeviceAttributes();
   DeviceConfig cfg = DeviceConfig();
+  DamodarSensors damodarSensors = DamodarSensors();
+
+  List<FlSpot> celsiusData = [];
+  List<FlSpot> tdsData = [];
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +48,23 @@ class _VanillaDashboardScreenState extends State<DamodarDashboardScreen> {
         } else if (state is WebSocketMessageReadyDeviceConfig) {
           setState(() {
             cfg = state.config;
+          });
+        } else if (state is WebSocketMessageReadyDamodarSensors) {
+          setState(() {
+            damodarSensors = state.damodarSensors;
+
+            if (celsiusData.length >= 240) {
+              celsiusData.removeAt(0); // Remove oldest point (FIFO approach)
+            }
+
+            if (tdsData.length >= 240) {
+              tdsData.removeAt(0); // Remove oldest point (FIFO approach)
+            }
+
+            celsiusData.add(FlSpot(
+                state.damodarSensors.ts.toDouble(), state.damodarSensors.cels));
+            tdsData.add(FlSpot(
+                state.damodarSensors.ts.toDouble(), state.damodarSensors.ppm));
           });
         } else if (state is WebSocketDisconnect) {
           Navigator.pushAndRemoveUntil(
@@ -98,8 +122,19 @@ class _VanillaDashboardScreenState extends State<DamodarDashboardScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               WaterTemperatureWidget(
-                  celsius: 20, min: 28.8, max: 29.9, average: 29.5),
-              WaterTDSWidget(tds: 250, min: 240, max: 260, average: 252),
+                  celsius: damodarSensors.cels,
+                  min: damodarSensors.celsMin,
+                  max: damodarSensors.celsMax,
+                  average: damodarSensors.celsAvg),
+              GenericLineChart(
+                  data: celsiusData, title: "Celsius", yAxisLabel: "Temp (°C)"),
+              WaterTDSWidget(
+                  tds: damodarSensors.ppm,
+                  min: damodarSensors.ppmMin,
+                  max: damodarSensors.ppmMax,
+                  average: damodarSensors.ppmAvg),
+              GenericLineChart(
+                  data: tdsData, title: "TDS", yAxisLabel: "TDS (ppm)"),
             ],
           ),
         ),
