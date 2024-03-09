@@ -55,8 +55,6 @@ class WebSocketService extends ChangeNotifier {
       }, onError: (error) {
         // Handle errors
         _isConnected = false;
-        _context?.read<WebSocketBloc>().add(
-            WebSocketOnError(error: "WebSocket server error has occured!"));
       });
     } catch (e) {
       // Connection error handling
