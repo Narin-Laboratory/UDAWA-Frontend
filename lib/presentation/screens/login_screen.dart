@@ -5,6 +5,7 @@ import 'package:udawa/bloc/auth_bloc.dart';
 import 'package:udawa/bloc/websocket_bloc.dart';
 import 'package:udawa/models/mdns_device_model.dart';
 import 'package:udawa/presentation/screens/damodar_dashboard_screen.dart';
+import 'package:udawa/presentation/screens/prahlad_dashboard_screen.dart';
 import 'package:udawa/presentation/screens/vanilla_dashboard_screen.dart';
 import 'package:udawa/presentation/widgets/login_field_widget.dart';
 
@@ -128,7 +129,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       builder: (context) => const DamodarDashboardScreen()),
                   (route) => false,
                 );
-              } else if (model == 'Sudarsan') {}
+              } else if (model == 'Sudarsan') {
+              } else if (model == 'Prahlad') {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PrahladDashboardScreen()),
+                  (route) => false,
+                );
+              }
             }
           },
           builder: (context, state) {

@@ -3,6 +3,7 @@ import 'package:udawa/presentation/widgets/key_value_widget.dart';
 
 class WaterTDSWidget extends StatefulWidget {
   final double tds;
+  final double tdsRaw;
   final double min;
   final double max;
   final double average;
@@ -10,6 +11,7 @@ class WaterTDSWidget extends StatefulWidget {
   const WaterTDSWidget(
       {Key? key,
       required this.tds,
+      this.tdsRaw = 0.0,
       required this.min,
       required this.max,
       required this.average})
@@ -45,54 +47,57 @@ class _WaterTDSWidgetState extends State<WaterTDSWidget> {
       iconColor = Colors.purple;
     }
 
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(0), // Example padding
-        child: Card(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(height: 20),
-              const Text(
-                "Water TDS", // Display current slider value
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w100,
-                ),
+    return Padding(
+      padding: const EdgeInsets.all(0), // Example padding
+      child: Card(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 20),
+            const Text(
+              "Water TDS", // Display current slider value
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.w100,
               ),
-              const SizedBox(height: 20),
-              RichText(
-                text: TextSpan(
-                  children: [
-                    WidgetSpan(
-                      child: Icon(
-                        Icons.water,
-                        color: iconColor,
-                        size: 40,
-                      ), // Customize icon & color
-                    ),
-                    TextSpan(
-                      text: " ${widget.tds.toStringAsFixed(2)}ppm",
-                      style: TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                          color: iconColor),
-                    ),
-                  ],
-                ),
+            ),
+            const SizedBox(height: 20),
+            RichText(
+              text: TextSpan(
+                children: [
+                  WidgetSpan(
+                    child: Icon(
+                      Icons.water,
+                      color: iconColor,
+                      size: 40,
+                    ), // Customize icon & color
+                  ),
+                  TextSpan(
+                    text: " ${widget.tds.toStringAsFixed(2)}ppm",
+                    style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: iconColor),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-              const SizedBox(height: 30),
-              KeyValueWidget(
-                  label: 'Min', value: "${widget.min.toStringAsFixed(2)}ppm"),
-              KeyValueWidget(
-                  label: 'Max', value: "${widget.max.toStringAsFixed(2)}ppm"),
-              KeyValueWidget(
-                  label: 'Average',
-                  value: "${widget.average.toStringAsFixed(2)}ppm"),
-              const SizedBox(height: 20),
-            ],
-          ),
+            ),
+            const SizedBox(height: 20),
+            const SizedBox(height: 30),
+            KeyValueWidget(
+                label: 'Min', value: "${widget.min.toStringAsFixed(2)}ppm"),
+            KeyValueWidget(
+                label: 'Max', value: "${widget.max.toStringAsFixed(2)}ppm"),
+            KeyValueWidget(
+                label: 'Average',
+                value: "${widget.average.toStringAsFixed(2)}ppm"),
+            widget.tdsRaw != 0.0
+                ? KeyValueWidget(
+                    label: 'Raw',
+                    value: "${widget.tdsRaw.toStringAsFixed(2)}ppm")
+                : const Text(""),
+            const SizedBox(height: 20),
+          ],
         ),
       ),
     );

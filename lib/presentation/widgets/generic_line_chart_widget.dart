@@ -3,7 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 
 class GenericLineChart extends StatelessWidget {
-  final List<FlSpot> data;
+  final List<List<FlSpot>> data;
   final String title;
   final String yAxisLabel;
   final double minY;
@@ -18,8 +18,34 @@ class GenericLineChart extends StatelessWidget {
     this.maxY = 100,
   }) : super(key: key);
 
+  List<LineChartBarData> generateLineChartBars(List<List<FlSpot>> dataList) {
+    List<LineChartBarData> lineBars = [];
+
+    int counter = 0;
+    Color color = Colors.white;
+    for (List<FlSpot> data in dataList) {
+      if (counter == 0) {
+        color = Colors.blue;
+      } else if (counter == 1) {
+        color = const Color.fromARGB(50, 96, 125, 139);
+      }
+      lineBars.add(
+        LineChartBarData(
+          spots: data,
+          color: color,
+          // Other common customization...
+        ),
+      );
+
+      counter++;
+    }
+
+    return lineBars;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final lineBarsData = generateLineChartBars(data);
     //print(data);
     return Card(
       // Wrap the container in a Card
@@ -32,12 +58,7 @@ class GenericLineChart extends StatelessWidget {
           LineChartData(
             minY: minY,
             maxY: maxY,
-            lineBarsData: [
-              LineChartBarData(
-                spots: data,
-                // ... Other common customization ...
-              )
-            ],
+            lineBarsData: lineBarsData,
             titlesData: FlTitlesData(
               show: true,
               bottomTitles: AxisTitles(
@@ -51,8 +72,8 @@ class GenericLineChart extends StatelessWidget {
                         DateTime.fromMillisecondsSinceEpoch(
                             value.toInt() * 1000);
                     // Customize format:
-                    if (timestamp.second % 30 == 0) {
-                      return Text(DateFormat('hh:mm').format(timestamp));
+                    if (timestamp.second % 10 == 0) {
+                      return Text(DateFormat('mm:ss').format(timestamp));
                     }
 
                     return const Text("");

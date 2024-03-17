@@ -5,22 +5,26 @@ import 'package:udawa/bloc/websocket_bloc.dart';
 import 'package:udawa/models/device_attributes_model.dart';
 import 'package:udawa/models/device_config_model.dart';
 import 'package:udawa/models/device_telemetry_model.dart';
+import 'package:udawa/models/power_sensor_model.dart';
 import 'package:udawa/models/tds_sensor_model.dart';
 import 'package:udawa/models/temperature_sensor_model.dart';
 import 'package:udawa/presentation/screens/login_screen.dart';
 import 'package:udawa/presentation/widgets/appbar_widget.dart';
 import 'package:udawa/presentation/widgets/generic_line_chart_widget.dart';
+import 'package:udawa/presentation/widgets/power_amperage_widget.dart';
+import 'package:udawa/presentation/widgets/power_voltage_widget.dart';
+import 'package:udawa/presentation/widgets/power_wattage_widget.dart';
 import 'package:udawa/presentation/widgets/water_tds_widget.dart';
 import 'package:udawa/presentation/widgets/water_temperature_widget.dart';
 
-class DamodarDashboardScreen extends StatefulWidget {
-  const DamodarDashboardScreen({super.key});
+class PrahladDashboardScreen extends StatefulWidget {
+  const PrahladDashboardScreen({super.key});
 
   @override
-  State<DamodarDashboardScreen> createState() => _DamodarDashboardScreenState();
+  State<PrahladDashboardScreen> createState() => _PrahladDashboardScreenState();
 }
 
-class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
+class _PrahladDashboardScreenState extends State<PrahladDashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Add a key
 
   DeviceTelemetry devTel = DeviceTelemetry();
@@ -28,17 +32,36 @@ class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
   DeviceConfig cfg = DeviceConfig();
   TemperatureSensor temperatureSensor = TemperatureSensor();
   TDSSensor tdsSensor = TDSSensor();
+  PowerSensor powerSensor = PowerSensor();
 
   List<FlSpot> celsiusData = [];
   List<FlSpot> celsiusRawData = [];
   List<FlSpot> tdsData = [];
   List<FlSpot> tdsRawData = [];
 
+  List<FlSpot> voltData = [];
+  List<FlSpot> voltRawData = [];
+
+  List<FlSpot> ampData = [];
+  List<FlSpot> ampRawData = [];
+
+  List<FlSpot> wattData = [];
+  List<FlSpot> wattRawData = [];
+
   double celsMax = 0.0;
   double celsMin = -100.0;
 
   double tdsMax = 0.0;
   double tdsMin = -100.0;
+
+  double voltMax = 0.0;
+  double voltMin = -100.0;
+
+  double ampMax = 0.0;
+  double ampMin = -100.0;
+
+  double wattMax = 0.0;
+  double wattMin = -100.0;
 
   @override
   Widget build(BuildContext context) {
@@ -60,14 +83,14 @@ class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
           setState(() {
             temperatureSensor = state.temperatureSensor;
 
-            if (temperatureSensor.cels > celsMax) {
-              celsMax = temperatureSensor.cels;
+            if (temperatureSensor.celsRaw > celsMax) {
+              celsMax = temperatureSensor.celsRaw;
             }
-            if (temperatureSensor.cels < celsMin || celsMin == -100.0) {
-              celsMin = temperatureSensor.cels;
+            if (temperatureSensor.celsRaw < celsMin || celsMin == -100.0) {
+              celsMin = temperatureSensor.celsRaw;
             }
 
-            if (celsiusData.length >= 240) {
+            if (celsiusData.length >= 60) {
               celsiusData.removeAt(0); // Remove oldest point (FIFO approach)
               celsiusRawData.removeAt(0);
             } else {
@@ -81,14 +104,14 @@ class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
           setState(() {
             tdsSensor = state.tdsSensor;
 
-            if (tdsSensor.ppm > tdsMax) {
-              tdsMax = tdsSensor.ppm;
+            if (tdsSensor.ppmRaw > tdsMax) {
+              tdsMax = tdsSensor.ppmRaw;
             }
-            if (tdsSensor.ppm < tdsMin || tdsMin == -100.0) {
-              tdsMin = tdsSensor.ppm;
+            if (tdsSensor.ppmRaw < tdsMin || tdsMin == -100.0) {
+              tdsMin = tdsSensor.ppmRaw;
             }
 
-            if (tdsData.length >= 240) {
+            if (tdsData.length >= 60) {
               tdsData.removeAt(0); // Remove oldest point (FIFO approach)
               tdsRawData.removeAt(0);
             } else {
@@ -96,6 +119,61 @@ class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
                   FlSpot(state.tdsSensor.ts.toDouble(), state.tdsSensor.ppm));
               tdsRawData.add(FlSpot(
                   state.tdsSensor.ts.toDouble(), state.tdsSensor.ppmRaw));
+            }
+          });
+        } else if (state is WebSocketMessageReadyPowerSensor) {
+          setState(() {
+            powerSensor = state.powerSensor;
+
+            if (powerSensor.voltRaw > voltMax) {
+              voltMax = powerSensor.voltRaw;
+            }
+            if (powerSensor.voltRaw < voltMin || voltMin == -100.0) {
+              voltMin = powerSensor.voltRaw;
+            }
+
+            if (voltData.length >= 60) {
+              voltData.removeAt(0);
+              voltRawData.removeAt(0);
+            } else {
+              voltData.add(FlSpot(
+                  state.powerSensor.ts.toDouble(), state.powerSensor.volt));
+              voltRawData.add(FlSpot(
+                  state.powerSensor.ts.toDouble(), state.powerSensor.voltRaw));
+            }
+
+            if (powerSensor.ampRaw > ampMax) {
+              ampMax = powerSensor.ampRaw;
+            }
+            if (powerSensor.ampRaw < ampMin || ampMin == -100.0) {
+              ampMin = powerSensor.ampRaw;
+            }
+
+            if (ampData.length >= 60) {
+              ampData.removeAt(0);
+              ampRawData.removeAt(0);
+            } else {
+              ampData.add(FlSpot(
+                  state.powerSensor.ts.toDouble(), state.powerSensor.amp));
+              ampRawData.add(FlSpot(
+                  state.powerSensor.ts.toDouble(), state.powerSensor.ampRaw));
+            }
+
+            if (powerSensor.wattRaw > wattMax) {
+              wattMax = powerSensor.wattRaw;
+            }
+            if (powerSensor.wattRaw < wattMin || wattMin == -100.0) {
+              wattMin = powerSensor.wattRaw;
+            }
+
+            if (wattData.length >= 60) {
+              wattData.removeAt(0);
+              wattRawData.removeAt(0);
+            } else {
+              wattData.add(FlSpot(
+                  state.powerSensor.ts.toDouble(), state.powerSensor.watt));
+              wattRawData.add(FlSpot(
+                  state.powerSensor.ts.toDouble(), state.powerSensor.wattRaw));
             }
           });
         } else if (state is WebSocketDisconnect) {
@@ -110,7 +188,7 @@ class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
         key: _scaffoldKey, // Assign the key
         appBar: AppBarWidget(
           scaffoldKey: _scaffoldKey,
-          title: "UDAWA Damodar",
+          title: "UDAWA Prahlad",
           uptime: " UT ${devTel.uptime.toString()}",
         ),
         drawer: Drawer(
@@ -155,6 +233,7 @@ class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
             children: [
               WaterTemperatureWidget(
                   celsius: temperatureSensor.cels,
+                  celsiusRaw: temperatureSensor.celsRaw,
                   min: celsMin,
                   max: celsMax,
                   average: temperatureSensor.celsAvg),
@@ -162,11 +241,12 @@ class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
                 data: [celsiusData, celsiusRawData],
                 title: "Celsius",
                 yAxisLabel: "Temp (°C)",
-                minY: double.parse((celsMin - 2).toStringAsFixed(2)),
-                maxY: double.parse((celsMax + 2).toStringAsFixed(2)),
+                minY: double.parse((celsMin - 1).toStringAsFixed(2)),
+                maxY: double.parse((celsMax + 1).toStringAsFixed(2)),
               ),
               WaterTDSWidget(
                   tds: tdsSensor.ppm,
+                  tdsRaw: tdsSensor.ppmRaw,
                   min: tdsMin,
                   max: tdsMax,
                   average: tdsSensor.ppmAvg),
@@ -174,8 +254,44 @@ class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
                 data: [tdsData, tdsRawData],
                 title: "TDS",
                 yAxisLabel: "TDS (ppm)",
-                minY: double.parse((tdsMin - 5).toStringAsFixed(2)),
-                maxY: double.parse((tdsMax + 5).toStringAsFixed(2)),
+                minY: double.parse((tdsMin - 2).toStringAsFixed(2)),
+                maxY: double.parse((tdsMax + 2).toStringAsFixed(2)),
+              ),
+              PowerVoltageWidget(
+                  volt: powerSensor.volt,
+                  min: voltMin,
+                  max: voltMax,
+                  average: powerSensor.voltAvg),
+              GenericLineChart(
+                data: [voltData, voltRawData],
+                title: "Voltage",
+                yAxisLabel: "Volt (v)",
+                minY: double.parse((voltMin - 2).toStringAsFixed(2)),
+                maxY: double.parse((voltMax + 2).toStringAsFixed(2)),
+              ),
+              PowerAmperageWidget(
+                  amp: powerSensor.amp,
+                  min: ampMin,
+                  max: ampMax,
+                  average: powerSensor.ampAvg),
+              GenericLineChart(
+                data: [ampData, ampRawData],
+                title: "Amperage",
+                yAxisLabel: "mili Ampere (mA)",
+                minY: double.parse((ampMin - 2).toStringAsFixed(2)),
+                maxY: double.parse((ampMax + 2).toStringAsFixed(2)),
+              ),
+              PowerWattageWidget(
+                  watt: powerSensor.watt,
+                  min: wattMin,
+                  max: wattMax,
+                  average: powerSensor.wattAvg),
+              GenericLineChart(
+                data: [wattData, wattRawData],
+                title: "Wattage",
+                yAxisLabel: "Watt (W)",
+                minY: double.parse((wattMin - 2).toStringAsFixed(2)),
+                maxY: double.parse((wattMax + 2).toStringAsFixed(2)),
               ),
             ],
           ),

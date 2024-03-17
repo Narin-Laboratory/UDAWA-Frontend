@@ -2,10 +2,12 @@
 import 'package:bloc/bloc.dart';
 // ignore: depend_on_referenced_packages
 import 'package:meta/meta.dart';
-import 'package:udawa/models/damodar_sensors_model.dart';
 import 'package:udawa/models/device_attributes_model.dart';
 import 'package:udawa/models/device_config_model.dart';
 import 'package:udawa/models/device_telemetry_model.dart';
+import 'package:udawa/models/power_sensor_model.dart';
+import 'package:udawa/models/tds_sensor_model.dart';
+import 'package:udawa/models/temperature_sensor_model.dart';
 
 part 'websocket_event.dart';
 part 'websocket_state.dart';
@@ -52,11 +54,18 @@ class WebSocketBloc extends Bloc<WebSocketEvent, WebSocketState> {
           final DeviceConfig config =
               DeviceConfig.fromJson(event.message['cfg']);
           emit(WebSocketMessageReadyDeviceConfig(config: config));
-        } else if (event.message?['damodarSensors'] != null) {
-          final DamodarSensors damodarSensors =
-              DamodarSensors.fromJson(event.message['damodarSensors']);
-          emit(WebSocketMessageReadyDamodarSensors(
-              damodarSensors: damodarSensors));
+        } else if (event.message?['temperature'] != null) {
+          final TemperatureSensor temperatureSensor =
+              TemperatureSensor.fromJson(event.message['temperature']);
+          emit(WebSocketMessageReadyTemperatureSensor(
+              temperatureSensor: temperatureSensor));
+        } else if (event.message?['tds'] != null) {
+          final TDSSensor tdsSensor = TDSSensor.fromJson(event.message['tds']);
+          emit(WebSocketMessageReadyTDSSensor(tdsSensor: tdsSensor));
+        } else if (event.message?['power'] != null) {
+          final PowerSensor powerSensor =
+              PowerSensor.fromJson(event.message['power']);
+          emit(WebSocketMessageReadyPowerSensor(powerSensor: powerSensor));
         }
       }
 

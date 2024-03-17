@@ -1,45 +1,29 @@
-class DamodarSensors {
-  final double ppm;
-  final double ppmAvg;
-  final double ppmMax;
-  final double ppmMin;
+class TemperatureSensor {
   final double cels;
+  final double celsRaw;
   final double celsAvg;
   final double celsMax;
   final double celsMin;
   final int ts;
 
-  DamodarSensors({
-    this.ppm = 0.0,
-    this.ppmAvg = 0.0,
-    this.ppmMax = 0.0,
-    this.ppmMin = 0.0,
+  TemperatureSensor({
     this.cels = 0.0,
+    this.celsRaw = 0.0,
     this.celsAvg = 0.0,
     this.celsMax = 0.0,
     this.celsMin = 0.0,
     this.ts = 0,
   });
 
-  factory DamodarSensors.fromJson(Map<String, dynamic> data) {
+  factory TemperatureSensor.fromJson(Map<String, dynamic> data) {
     try {
-      return DamodarSensors(
-        ppm: data["ppm"] is double
-            ? data["ppm"]
-            : (data["ppm"] as int).toDouble(),
-        ppmAvg: data["ppmAvg"] is double
-            ? data["ppmAvg"]
-            : (data["ppmAvg"] as int).toDouble(),
-        ppmMax: data["ppmMax"] is double
-            ? data["ppmMax"]
-            : (data["ppmMax"] as int).toDouble(),
-        ppmMin: data["ppmMin"] is double
-            ? data["ppmMin"]
-            : (data["ppmMin"] as int).toDouble(),
-
+      return TemperatureSensor(
         cels: data["cels"] is double
             ? data["cels"]
             : (data["cels"] as int).toDouble(),
+        celsRaw: data["celsRaw"] is double
+            ? data["celsRaw"]
+            : (data["celsRaw"] as int).toDouble(),
         celsAvg: data["celsAvg"] is double
             ? data["celsAvg"]
             : (data["celsAvg"] as int).toDouble(),
@@ -53,8 +37,8 @@ class DamodarSensors {
         ts: data["ts"] is int ? data["ts"] : (data["ts"] as double).toInt(),
       );
     } catch (error) {
-      print("DamodarSensor error: ${error.toString()}");
-      return DamodarSensors(); // Return default on error
+      print("TemperatureSensor error: ${error.toString()}");
+      return TemperatureSensor(); // Return default on error
     }
   }
 }
