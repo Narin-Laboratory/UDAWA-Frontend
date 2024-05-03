@@ -1,12 +1,15 @@
 // ignore: depend_on_referenced_packages
+
 import 'package:bloc/bloc.dart';
 // ignore: depend_on_referenced_packages
 import 'package:meta/meta.dart';
+import 'package:udawa/models/ai_analyzer_model.dart';
 import 'package:udawa/models/device_attributes_model.dart';
 import 'package:udawa/models/device_config_model.dart';
 import 'package:udawa/models/device_telemetry_model.dart';
+import 'package:udawa/models/green_house_parameters.dart';
 import 'package:udawa/models/power_sensor_model.dart';
-import 'package:udawa/models/tds_sensor_model.dart';
+import 'package:udawa/models/ec_sensor_model.dart';
 import 'package:udawa/models/temperature_sensor_model.dart';
 
 part 'websocket_event.dart';
@@ -59,13 +62,24 @@ class WebSocketBloc extends Bloc<WebSocketEvent, WebSocketState> {
               TemperatureSensor.fromJson(event.message['temperature']);
           emit(WebSocketMessageReadyTemperatureSensor(
               temperatureSensor: temperatureSensor));
-        } else if (event.message?['tds'] != null) {
-          final TDSSensor tdsSensor = TDSSensor.fromJson(event.message['tds']);
-          emit(WebSocketMessageReadyTDSSensor(tdsSensor: tdsSensor));
+        } else if (event.message?['ec'] != null) {
+          final ECSensor ecSensor = ECSensor.fromJson(event.message['ec']);
+          emit(WebSocketMessageReadyECSensor(ecSensor: ecSensor));
         } else if (event.message?['power'] != null) {
           final PowerSensor powerSensor =
               PowerSensor.fromJson(event.message['power']);
           emit(WebSocketMessageReadyPowerSensor(powerSensor: powerSensor));
+        } else if (event.message?['GetGHParams'] != null) {
+          final GreenHouseParameters ghParams =
+              GreenHouseParameters.fromJson(event.message["GetGHParams"]);
+          //print(test);
+          emit(WebSocketMessageReadyGHParams(ghParams: ghParams));
+        } else if (event.message?['DamodarAIAnalyzer'] != null) {
+          final DamodarAIAnalyzer damodarAIAnalyzer =
+              DamodarAIAnalyzer.fromJson(event.message["DamodarAIAnalyzer"]);
+          //print(test);
+          emit(WebSocketMessageReadyDamodarAIAnalyzer(
+              damodarAIAnalyzer: damodarAIAnalyzer));
         }
       }
 

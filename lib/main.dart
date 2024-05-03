@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:udawa/app_bloc_observer.dart';
 import 'package:udawa/bloc/auth_bloc.dart';
+import 'package:udawa/bloc/damodar_ai_analyzer_bloc.dart';
 import 'package:udawa/bloc/websocket_bloc.dart';
 import 'package:udawa/data/data_provider/websocket_data_provider.dart';
+import 'package:udawa/models/ai_analyzer_model.dart';
 import 'package:udawa/presentation/screens/login_screen.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
@@ -37,6 +39,10 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => WebSocketService(context)),
         BlocProvider(
           create: (context) => AuthBloc(context),
+          lazy: true,
+        ),
+        BlocProvider(
+          create: (context) => DamodarAIAnalyzerBloc(context),
           lazy: true,
         ),
       ],

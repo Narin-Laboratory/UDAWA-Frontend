@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:udawa/presentation/widgets/key_value_widget.dart';
 
-class WaterTDSWidget extends StatefulWidget {
-  final double tds;
-  final double tdsRaw;
+class WaterECWidget extends StatefulWidget {
+  final double ec;
+  final double ecRaw;
   final double min;
   final double max;
   final double average;
 
-  const WaterTDSWidget(
+  const WaterECWidget(
       {Key? key,
-      required this.tds,
-      this.tdsRaw = 0.0,
+      required this.ec,
+      this.ecRaw = 0.0,
       required this.min,
       required this.max,
       required this.average})
       : super(key: key);
 
   @override
-  _WaterTDSWidgetState createState() => _WaterTDSWidgetState();
+  _WaterECWidgetState createState() => _WaterECWidgetState();
 }
 
-class _WaterTDSWidgetState extends State<WaterTDSWidget> {
+class _WaterECWidgetState extends State<WaterECWidget> {
   @override
   void initState() {
     super.initState();
@@ -31,19 +31,19 @@ class _WaterTDSWidgetState extends State<WaterTDSWidget> {
   Widget build(BuildContext context) {
     dynamic iconColor = Colors.blue;
 
-    if (widget.tds < 100) {
+    if (widget.ec < 0.02) {
       iconColor = Colors.lightBlueAccent;
-    } else if (widget.tds >= 100 && widget.tds <= 200) {
+    } else if (widget.ec >= 0.02 && widget.ec <= 0.05) {
       iconColor = Colors.lightBlue;
-    } else if (widget.tds > 200 && widget.tds <= 400) {
+    } else if (widget.ec > 0.05 && widget.ec <= 0.1) {
       iconColor = Colors.lightGreen;
-    } else if (widget.tds > 400 && widget.tds <= 600) {
+    } else if (widget.ec > 0.1 && widget.ec <= 0.2) {
       iconColor = Colors.green;
-    } else if (widget.tds > 600 && widget.tds <= 800) {
+    } else if (widget.ec > 0.2 && widget.ec <= 0.8) {
       iconColor = Colors.lime;
-    } else if (widget.tds > 800 && widget.tds <= 1200) {
+    } else if (widget.ec > 0.8 && widget.ec <= 1.2) {
       iconColor = Colors.pink;
-    } else if (widget.tds > 1200) {
+    } else if (widget.ec > 1.2) {
       iconColor = Colors.purple;
     }
 
@@ -55,7 +55,7 @@ class _WaterTDSWidgetState extends State<WaterTDSWidget> {
           children: [
             const SizedBox(height: 20),
             const Text(
-              "Water TDS", // Display current slider value
+              "Water EC", // Display current slider value
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.w100,
@@ -73,7 +73,7 @@ class _WaterTDSWidgetState extends State<WaterTDSWidget> {
                     ), // Customize icon & color
                   ),
                   TextSpan(
-                    text: " ${widget.tds.toStringAsFixed(2)}ppm",
+                    text: " ${widget.ec.toStringAsFixed(2)} μS/cm",
                     style: TextStyle(
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
@@ -85,16 +85,16 @@ class _WaterTDSWidgetState extends State<WaterTDSWidget> {
             const SizedBox(height: 20),
             const SizedBox(height: 30),
             KeyValueWidget(
-                label: 'Min', value: "${widget.min.toStringAsFixed(2)}ppm"),
+                label: 'Min', value: "${widget.min.toStringAsFixed(2)} μS/cm"),
             KeyValueWidget(
-                label: 'Max', value: "${widget.max.toStringAsFixed(2)}ppm"),
+                label: 'Max', value: "${widget.max.toStringAsFixed(2)} μS/cm"),
             KeyValueWidget(
                 label: 'Average',
-                value: "${widget.average.toStringAsFixed(2)}ppm"),
-            widget.tdsRaw != 0.0
+                value: "${widget.average.toStringAsFixed(2)} μS/cm"),
+            widget.ecRaw != 0.0
                 ? KeyValueWidget(
                     label: 'Raw',
-                    value: "${widget.tdsRaw.toStringAsFixed(2)}ppm")
+                    value: "${widget.ecRaw.toStringAsFixed(2)} μS/cm")
                 : const Text(""),
             const SizedBox(height: 20),
           ],

@@ -6,7 +6,7 @@ import 'package:udawa/models/device_attributes_model.dart';
 import 'package:udawa/models/device_config_model.dart';
 import 'package:udawa/models/device_telemetry_model.dart';
 import 'package:udawa/models/power_sensor_model.dart';
-import 'package:udawa/models/tds_sensor_model.dart';
+import 'package:udawa/models/ec_sensor_model.dart';
 import 'package:udawa/models/temperature_sensor_model.dart';
 import 'package:udawa/presentation/screens/login_screen.dart';
 import 'package:udawa/presentation/widgets/appbar_widget.dart';
@@ -14,7 +14,7 @@ import 'package:udawa/presentation/widgets/generic_line_chart_widget.dart';
 import 'package:udawa/presentation/widgets/power_amperage_widget.dart';
 import 'package:udawa/presentation/widgets/power_voltage_widget.dart';
 import 'package:udawa/presentation/widgets/power_wattage_widget.dart';
-import 'package:udawa/presentation/widgets/water_tds_widget.dart';
+import 'package:udawa/presentation/widgets/water_ec_widget.dart';
 import 'package:udawa/presentation/widgets/water_temperature_widget.dart';
 
 class PrahladDashboardScreen extends StatefulWidget {
@@ -31,7 +31,7 @@ class _PrahladDashboardScreenState extends State<PrahladDashboardScreen> {
   DeviceAttributes attr = DeviceAttributes();
   DeviceConfig cfg = DeviceConfig();
   TemperatureSensor temperatureSensor = TemperatureSensor();
-  TDSSensor tdsSensor = TDSSensor();
+  ECSensor tdsSensor = ECSensor();
   PowerSensor powerSensor = PowerSensor();
 
   List<FlSpot> celsiusData = [];
@@ -100,25 +100,25 @@ class _PrahladDashboardScreenState extends State<PrahladDashboardScreen> {
                   state.temperatureSensor.celsRaw));
             }
           });
-        } else if (state is WebSocketMessageReadyTDSSensor) {
+        } else if (state is WebSocketMessageReadyECSensor) {
           setState(() {
-            tdsSensor = state.tdsSensor;
+            tdsSensor = state.ecSensor;
 
-            if (tdsSensor.ppmRaw > tdsMax) {
-              tdsMax = tdsSensor.ppmRaw;
+            if (tdsSensor.ecRaw > tdsMax) {
+              tdsMax = tdsSensor.ecRaw;
             }
-            if (tdsSensor.ppmRaw < tdsMin || tdsMin == -100.0) {
-              tdsMin = tdsSensor.ppmRaw;
+            if (tdsSensor.ecRaw < tdsMin || tdsMin == -100.0) {
+              tdsMin = tdsSensor.ecRaw;
             }
 
             if (tdsData.length >= 60) {
               tdsData.removeAt(0); // Remove oldest point (FIFO approach)
               tdsRawData.removeAt(0);
             } else {
-              tdsData.add(
-                  FlSpot(state.tdsSensor.ts.toDouble(), state.tdsSensor.ppm));
-              tdsRawData.add(FlSpot(
-                  state.tdsSensor.ts.toDouble(), state.tdsSensor.ppmRaw));
+              tdsData
+                  .add(FlSpot(state.ecSensor.ts.toDouble(), state.ecSensor.ec));
+              tdsRawData.add(
+                  FlSpot(state.ecSensor.ts.toDouble(), state.ecSensor.ecRaw));
             }
           });
         } else if (state is WebSocketMessageReadyPowerSensor) {
@@ -244,12 +244,12 @@ class _PrahladDashboardScreenState extends State<PrahladDashboardScreen> {
                 minY: double.parse((celsMin - 1).toStringAsFixed(2)),
                 maxY: double.parse((celsMax + 1).toStringAsFixed(2)),
               ),
-              WaterTDSWidget(
-                  tds: tdsSensor.ppm,
-                  tdsRaw: tdsSensor.ppmRaw,
+              WaterECWidget(
+                  ec: tdsSensor.ec,
+                  ecRaw: tdsSensor.ecRaw,
                   min: tdsMin,
                   max: tdsMax,
-                  average: tdsSensor.ppmAvg),
+                  average: tdsSensor.ecAvg),
               GenericLineChart(
                 data: [tdsData, tdsRawData],
                 title: "TDS",

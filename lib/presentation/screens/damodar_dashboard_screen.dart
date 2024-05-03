@@ -1,16 +1,22 @@
+import 'dart:async';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:udawa/bloc/damodar_ai_analyzer_bloc.dart';
 import 'package:udawa/bloc/websocket_bloc.dart';
+import 'package:udawa/models/ai_analyzer_model.dart';
 import 'package:udawa/models/device_attributes_model.dart';
 import 'package:udawa/models/device_config_model.dart';
 import 'package:udawa/models/device_telemetry_model.dart';
-import 'package:udawa/models/tds_sensor_model.dart';
+import 'package:udawa/models/green_house_parameters.dart';
+import 'package:udawa/models/ec_sensor_model.dart';
 import 'package:udawa/models/temperature_sensor_model.dart';
 import 'package:udawa/presentation/screens/login_screen.dart';
+import 'package:udawa/presentation/widgets/ai_card_widget.dart';
 import 'package:udawa/presentation/widgets/appbar_widget.dart';
 import 'package:udawa/presentation/widgets/generic_line_chart_widget.dart';
-import 'package:udawa/presentation/widgets/water_tds_widget.dart';
+import 'package:udawa/presentation/widgets/water_ec_widget.dart';
 import 'package:udawa/presentation/widgets/water_temperature_widget.dart';
 
 class DamodarDashboardScreen extends StatefulWidget {
@@ -27,24 +33,77 @@ class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
   DeviceAttributes attr = DeviceAttributes();
   DeviceConfig cfg = DeviceConfig();
   TemperatureSensor temperatureSensor = TemperatureSensor();
-  TDSSensor tdsSensor = TDSSensor();
+  ECSensor ecSensor = ECSensor();
+  GreenHouseParameters ghParams = GreenHouseParameters();
+  String prompt =
+      "Hi Gemini! What do you think about my hydroponic fertigation?";
+  DamodarAIAnalyzer damodarAIAnalyzer = DamodarAIAnalyzer();
+  int plantAge = 0;
 
   List<FlSpot> celsiusData = [];
   List<FlSpot> celsiusRawData = [];
-  List<FlSpot> tdsData = [];
-  List<FlSpot> tdsRawData = [];
+  List<FlSpot> ecData = [];
+  List<FlSpot> ecRawData = [];
 
   double celsMax = 0.0;
   double celsMin = -100.0;
 
-  double tdsMax = 0.0;
-  double tdsMin = -100.0;
+  double ecMax = 0.0;
+  double ecMin = -100.0;
+
+  bool _isGenerateButtonDisabled = false;
+
+  void _handleGenerateButtonClick() {
+    if (!_isGenerateButtonDisabled) {
+      // Disable the button
+      /*setState(() {
+        _isConnectButtonDisabled = true;
+      });*/
+
+      // Perform your action here
+      // For example, make network request, process data, etc.
+
+      dynamic command = {"cmd": "DamodarAIAnalyzer"};
+      context
+          .read<DamodarAIAnalyzerBloc>()
+          .add(DamodarAIAnalyzerRequest(command: command));
+
+      // After the action is completed, enable the button again
+      /*Future.delayed(const Duration(seconds: 10), () {
+        setState(() {
+          _isConnectButtonDisabled = false;
+        });
+      });*/
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<DamodarAIAnalyzerBloc>().add(DamodarAIAnalyzerIdle());
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<WebSocketBloc, WebSocketState>(
       listener: (context, state) {
-        if (state is WebSocketMessageReadyDeviceAttributes) {
+        if (state is WebSocketMessageReadyDamodarAIAnalyzer) {
+          setState(() {
+            damodarAIAnalyzer = state.damodarAIAnalyzer;
+          });
+
+          context.read<DamodarAIAnalyzerBloc>().add(DamodarAIAnalyzerResponse(
+              damodarAIAnalyzer: state.damodarAIAnalyzer));
+        } else if (state is WebSocketMessageReadyGHParams) {
+          setState(() {
+            ghParams = state.ghParams;
+            plantAge = ((ghParams.plantTransplantingTS -
+                        DateTime.now().millisecondsSinceEpoch) /
+                    (1000 * 60 * 60 * 24))
+                .floor();
+          });
+        } else if (state is WebSocketMessageReadyDeviceAttributes) {
           setState(() {
             attr = state.attributes;
           });
@@ -77,25 +136,25 @@ class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
                   state.temperatureSensor.celsRaw));
             }
           });
-        } else if (state is WebSocketMessageReadyTDSSensor) {
+        } else if (state is WebSocketMessageReadyECSensor) {
           setState(() {
-            tdsSensor = state.tdsSensor;
+            ecSensor = state.ecSensor;
 
-            if (tdsSensor.ppm > tdsMax) {
-              tdsMax = tdsSensor.ppm;
+            if (ecSensor.ec > ecMax) {
+              ecMax = ecSensor.ec;
             }
-            if (tdsSensor.ppm < tdsMin || tdsMin == -100.0) {
-              tdsMin = tdsSensor.ppm;
+            if (ecSensor.ec < ecMin || ecMin == -100.0) {
+              ecMin = ecSensor.ec;
             }
 
-            if (tdsData.length >= 240) {
-              tdsData.removeAt(0); // Remove oldest point (FIFO approach)
-              tdsRawData.removeAt(0);
+            if (ecData.length >= 240) {
+              ecData.removeAt(0); // Remove oldest point (FIFO approach)
+              ecRawData.removeAt(0);
             } else {
-              tdsData.add(
-                  FlSpot(state.tdsSensor.ts.toDouble(), state.tdsSensor.ppm));
-              tdsRawData.add(FlSpot(
-                  state.tdsSensor.ts.toDouble(), state.tdsSensor.ppmRaw));
+              ecData
+                  .add(FlSpot(state.ecSensor.ts.toDouble(), state.ecSensor.ec));
+              ecRawData.add(
+                  FlSpot(state.ecSensor.ts.toDouble(), state.ecSensor.ecRaw));
             }
           });
         } else if (state is WebSocketDisconnect) {
@@ -106,80 +165,108 @@ class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
           );
         }
       },
-      child: Scaffold(
-        key: _scaffoldKey, // Assign the key
-        appBar: AppBarWidget(
-          scaffoldKey: _scaffoldKey,
-          title: "UDAWA Damodar",
-          uptime: " UT ${devTel.uptime.toString()}",
-        ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: Text('UDAWA Menu'),
+      child: BlocConsumer<DamodarAIAnalyzerBloc, DamodarAIAnalyzerState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          return Scaffold(
+            key: _scaffoldKey, // Assign the key
+            appBar: AppBarWidget(
+              scaffoldKey: _scaffoldKey,
+              title: "UDAWA Damodar",
+              uptime: " UT ${devTel.uptime.toString()}",
+            ),
+            drawer: Drawer(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  const DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                    ),
+                    child: Text('UDAWA Menu'),
+                  ),
+                  ListTile(
+                    title: const Text('Dashboard'),
+                    onTap: () {
+                      // Handle Dashboard navigation (likely do nothing here)
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    title: const Text('Analytics'),
+                    onTap: () {
+                      // Navigate to Analytics screen
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    title: const Text('Settings'),
+                    onTap: () {
+                      // Navigate to Settings screen
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
               ),
-              ListTile(
-                title: const Text('Dashboard'),
-                onTap: () {
-                  // Handle Dashboard navigation (likely do nothing here)
-                  Navigator.pop(context);
-                },
+            ),
+            body: SingleChildScrollView(
+              // To handle potential overflow
+              padding: const EdgeInsets.all(6.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (state is DamodarAIAnalyzerOnRequest)
+                    const Center(
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  if (state is DamodarAIAnalyzerOnResponse)
+                    AICardWidget(
+                      message: damodarAIAnalyzer.response,
+                      onPressed: _handleGenerateButtonClick,
+                    ),
+                  if (state is DamodarAIAnalyzerOnIdle)
+                    AICardWidget(
+                      message: prompt,
+                      onPressed: _handleGenerateButtonClick,
+                    ),
+                  if (state is DamodarAIAnalyzerOnTimedout)
+                    AICardWidget(
+                      message: "Request timedout! Try again later.",
+                      onPressed: _handleGenerateButtonClick,
+                    ),
+                  WaterECWidget(
+                      ec: ecSensor.ec,
+                      min: ecMin,
+                      max: ecMax,
+                      average: ecSensor.ecAvg),
+                  GenericLineChart(
+                    data: [ecData, ecRawData],
+                    title: "EC",
+                    yAxisLabel: "EC (μS/cm)",
+                    minY: double.parse((0.0).toStringAsFixed(2)),
+                    maxY: double.parse((3.0).toStringAsFixed(2)),
+                  ),
+                  WaterTemperatureWidget(
+                      celsius: temperatureSensor.cels,
+                      min: celsMin,
+                      max: celsMax,
+                      average: temperatureSensor.celsAvg),
+                  GenericLineChart(
+                    data: [celsiusData, celsiusRawData],
+                    title: "Celsius",
+                    yAxisLabel: "Temp (°C)",
+                    minY: double.parse((celsMin - 2).toStringAsFixed(2)),
+                    maxY: double.parse((celsMax + 2).toStringAsFixed(2)),
+                  ),
+                ],
               ),
-              ListTile(
-                title: const Text('Analytics'),
-                onTap: () {
-                  // Navigate to Analytics screen
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: const Text('Settings'),
-                onTap: () {
-                  // Navigate to Settings screen
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        ),
-        body: SingleChildScrollView(
-          // To handle potential overflow
-          padding: const EdgeInsets.all(6.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              WaterTemperatureWidget(
-                  celsius: temperatureSensor.cels,
-                  min: celsMin,
-                  max: celsMax,
-                  average: temperatureSensor.celsAvg),
-              GenericLineChart(
-                data: [celsiusData, celsiusRawData],
-                title: "Celsius",
-                yAxisLabel: "Temp (°C)",
-                minY: double.parse((celsMin - 2).toStringAsFixed(2)),
-                maxY: double.parse((celsMax + 2).toStringAsFixed(2)),
-              ),
-              WaterTDSWidget(
-                  tds: tdsSensor.ppm,
-                  min: tdsMin,
-                  max: tdsMax,
-                  average: tdsSensor.ppmAvg),
-              GenericLineChart(
-                data: [tdsData, tdsRawData],
-                title: "TDS",
-                yAxisLabel: "TDS (ppm)",
-                minY: double.parse((tdsMin - 5).toStringAsFixed(2)),
-                maxY: double.parse((tdsMax + 5).toStringAsFixed(2)),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
