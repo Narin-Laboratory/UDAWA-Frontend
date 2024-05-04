@@ -27,43 +27,42 @@ class _AICardWidgetState extends State<AICardWidget> {
     return Container(
       width: double.infinity,
       child: Card(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 20),
-            const Text(
-              "AI Interpreter",
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.w100,
-              ),
-            ),
-            if (widget.message.isNotEmpty)
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                title: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    widget.message,
-                    textAlign: TextAlign.justify,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.normal,
-                      color: Colors.white70,
-                    ),
-                  ),
+        margin: EdgeInsets.all(16.0),
+        elevation: 4.0,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'AI Interpreter',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: widget.onPressed, // Call the callback function
-              icon: Icon(Icons.refresh),
-              label: const Text(
-                "Generate",
-                style: TextStyle(fontSize: 18),
+              SizedBox(height: 16.0),
+              if (widget.message.isNotEmpty) SizedBox(height: 16.0),
+              Text(
+                widget.message,
+                textAlign: TextAlign.justify,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.white70,
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: 16.0),
+              ElevatedButton.icon(
+                onPressed: widget.onPressed, // Call the callback function
+                icon: Icon(Icons.refresh),
+                label: const Text(
+                  "Generate",
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

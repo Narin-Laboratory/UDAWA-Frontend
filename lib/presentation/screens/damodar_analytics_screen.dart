@@ -12,7 +12,7 @@ import 'package:udawa/models/device_telemetry_model.dart';
 import 'package:udawa/models/green_house_parameters.dart';
 import 'package:udawa/models/ec_sensor_model.dart';
 import 'package:udawa/models/temperature_sensor_model.dart';
-import 'package:udawa/presentation/screens/damodar_analytics_screen.dart';
+import 'package:udawa/presentation/screens/damodar_dashboard_screen.dart';
 import 'package:udawa/presentation/screens/damodar_settings_screen.dart';
 import 'package:udawa/presentation/screens/login_screen.dart';
 import 'package:udawa/presentation/widgets/ai_card_widget.dart';
@@ -21,14 +21,14 @@ import 'package:udawa/presentation/widgets/generic_line_chart_widget.dart';
 import 'package:udawa/presentation/widgets/water_ec_widget.dart';
 import 'package:udawa/presentation/widgets/water_temperature_widget.dart';
 
-class DamodarDashboardScreen extends StatefulWidget {
-  const DamodarDashboardScreen({super.key});
+class DamodarAnalyticsScreen extends StatefulWidget {
+  const DamodarAnalyticsScreen({super.key});
 
   @override
-  State<DamodarDashboardScreen> createState() => _DamodarDashboardScreenState();
+  State<DamodarAnalyticsScreen> createState() => _DamodarAnalyticsScreenState();
 }
 
-class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
+class _DamodarAnalyticsScreenState extends State<DamodarAnalyticsScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Add a key
 
   DeviceTelemetry devTel = DeviceTelemetry();
@@ -65,7 +65,7 @@ class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
       // Perform your action here
       // For example, make network request, process data, etc.
 
-      dynamic command = {"cmd": "damodarAIAnalyzer"};
+      dynamic command = {"cmd": "DamodarAIAnalyzer"};
       context
           .read<DamodarAIAnalyzerBloc>()
           .add(DamodarAIAnalyzerRequest(command: command));
@@ -100,8 +100,8 @@ class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
         } else if (state is WebSocketMessageReadyGHParams) {
           setState(() {
             ghParams = state.ghParams;
-            plantAge = ((DateTime.now().millisecondsSinceEpoch -
-                        ghParams.plantTransplantingTS) /
+            plantAge = ((ghParams.plantTransplantingTS -
+                        DateTime.now().millisecondsSinceEpoch) /
                     (1000 * 60 * 60 * 24))
                 .floor();
           });
@@ -229,34 +229,6 @@ class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (state is DamodarAIAnalyzerOnRequest)
-                    const Center(
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                  if (state is DamodarAIAnalyzerOnResponse)
-                    AICardWidget(
-                      message: damodarAIAnalyzer.response,
-                      onPressed: _handleGenerateButtonClick,
-                    ),
-                  if (state is DamodarAIAnalyzerOnIdle)
-                    AICardWidget(
-                      message: prompt,
-                      onPressed: _handleGenerateButtonClick,
-                    ),
-                  if (state is DamodarAIAnalyzerOnTimedout)
-                    AICardWidget(
-                      message: "Request timedout! Try again later.",
-                      onPressed: _handleGenerateButtonClick,
-                    ),
-                  WaterECWidget(
-                      ec: ecSensor.ec,
-                      min: ecMin,
-                      max: ecMax,
-                      average: ecSensor.ecAvg),
                   GenericLineChart(
                     data: [ecData, ecRawData],
                     title: "EC",
@@ -264,11 +236,6 @@ class _DamodarDashboardScreenState extends State<DamodarDashboardScreen> {
                     minY: double.parse((0.0).toStringAsFixed(2)),
                     maxY: double.parse((3.0).toStringAsFixed(2)),
                   ),
-                  WaterTemperatureWidget(
-                      celsius: temperatureSensor.cels,
-                      min: celsMin,
-                      max: celsMax,
-                      average: temperatureSensor.celsAvg),
                   GenericLineChart(
                     data: [celsiusData, celsiusRawData],
                     title: "Celsius",

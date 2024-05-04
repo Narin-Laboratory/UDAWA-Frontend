@@ -69,14 +69,14 @@ class WebSocketBloc extends Bloc<WebSocketEvent, WebSocketState> {
           final PowerSensor powerSensor =
               PowerSensor.fromJson(event.message['power']);
           emit(WebSocketMessageReadyPowerSensor(powerSensor: powerSensor));
-        } else if (event.message?['GetGHParams'] != null) {
+        } else if (event.message?['getGHParams'] != null) {
           final GreenHouseParameters ghParams =
-              GreenHouseParameters.fromJson(event.message["GetGHParams"]);
+              GreenHouseParameters.fromJson(event.message["getGHParams"]);
           //print(test);
           emit(WebSocketMessageReadyGHParams(ghParams: ghParams));
-        } else if (event.message?['DamodarAIAnalyzer'] != null) {
+        } else if (event.message?['damodarAIAnalyzer'] != null) {
           final DamodarAIAnalyzer damodarAIAnalyzer =
-              DamodarAIAnalyzer.fromJson(event.message["DamodarAIAnalyzer"]);
+              DamodarAIAnalyzer.fromJson(event.message["damodarAIAnalyzer"]);
           //print(test);
           emit(WebSocketMessageReadyDamodarAIAnalyzer(
               damodarAIAnalyzer: damodarAIAnalyzer));

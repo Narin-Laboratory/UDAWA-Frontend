@@ -2,14 +2,14 @@ class GreenHouseParameters {
   final String cultivationTechnology;
   final int plantTransplantingTS;
   final String plantType;
-  final double rawWaterTDS;
+  final double rawWaterEC;
   final String waterSource;
 
   GreenHouseParameters({
     this.cultivationTechnology = "",
     this.plantTransplantingTS = 0,
     this.plantType = "",
-    this.rawWaterTDS = 0.0,
+    this.rawWaterEC = 0.0,
     this.waterSource = "",
   });
 
@@ -19,7 +19,7 @@ class GreenHouseParameters {
         cultivationTechnology: data["cultivationTechnology"] as String,
         plantTransplantingTS: int.parse(data["plantTransplantingTS"] ?? '0'),
         plantType: data["plantType"] as String,
-        rawWaterTDS: double.parse(data["rawWaterTDS"] ?? '0'),
+        rawWaterEC: double.parse(data["rawWaterEC"] ?? '0'),
         waterSource: data["waterSource"] as String,
       );
     } catch (error, stackTrace) {
