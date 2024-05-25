@@ -35,7 +35,7 @@ class WebSocketBloc extends Bloc<WebSocketEvent, WebSocketState> {
   void _onWebSocketOnMessage(
       WebSocketOnMessage event, Emitter<WebSocketState> emit) {
     try {
-      //print(event.message);
+      print(event.message);
       // Handle message if not null
       if (event.message != null) {
         if (event.message?['status'] != null) {
@@ -72,7 +72,7 @@ class WebSocketBloc extends Bloc<WebSocketEvent, WebSocketState> {
         } else if (event.message?['getGHParams'] != null) {
           final GreenHouseParameters ghParams =
               GreenHouseParameters.fromJson(event.message["getGHParams"]);
-          //print(test);
+          print(event.message);
           emit(WebSocketMessageReadyGHParams(ghParams: ghParams));
         } else if (event.message?['damodarAIAnalyzer'] != null) {
           final DamodarAIAnalyzer damodarAIAnalyzer =

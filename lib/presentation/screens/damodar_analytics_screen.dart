@@ -97,7 +97,8 @@ class _DamodarAnalyticsScreenState extends State<DamodarAnalyticsScreen> {
 
           context.read<DamodarAIAnalyzerBloc>().add(DamodarAIAnalyzerResponse(
               damodarAIAnalyzer: state.damodarAIAnalyzer));
-        } else if (state is WebSocketMessageReadyGHParams) {
+        }
+        if (state is WebSocketMessageReadyGHParams) {
           setState(() {
             ghParams = state.ghParams;
             plantAge = ((ghParams.plantTransplantingTS -
@@ -105,19 +106,23 @@ class _DamodarAnalyticsScreenState extends State<DamodarAnalyticsScreen> {
                     (1000 * 60 * 60 * 24))
                 .floor();
           });
-        } else if (state is WebSocketMessageReadyDeviceAttributes) {
+        }
+        if (state is WebSocketMessageReadyDeviceAttributes) {
           setState(() {
             attr = state.attributes;
           });
-        } else if (state is WebSocketMessageReadyDeviceTelemetry) {
+        }
+        if (state is WebSocketMessageReadyDeviceTelemetry) {
           setState(() {
             devTel = state.telemetry;
           });
-        } else if (state is WebSocketMessageReadyDeviceConfig) {
+        }
+        if (state is WebSocketMessageReadyDeviceConfig) {
           setState(() {
             cfg = state.config;
           });
-        } else if (state is WebSocketMessageReadyTemperatureSensor) {
+        }
+        if (state is WebSocketMessageReadyTemperatureSensor) {
           setState(() {
             temperatureSensor = state.temperatureSensor;
 
@@ -138,7 +143,8 @@ class _DamodarAnalyticsScreenState extends State<DamodarAnalyticsScreen> {
                   state.temperatureSensor.celsRaw));
             }
           });
-        } else if (state is WebSocketMessageReadyECSensor) {
+        }
+        if (state is WebSocketMessageReadyECSensor) {
           setState(() {
             ecSensor = state.ecSensor;
 
@@ -159,7 +165,8 @@ class _DamodarAnalyticsScreenState extends State<DamodarAnalyticsScreen> {
                   FlSpot(state.ecSensor.ts.toDouble(), state.ecSensor.ecRaw));
             }
           });
-        } else if (state is WebSocketDisconnect) {
+        }
+        if (state is WebSocketDisconnect) {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const LoginScreen()),

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -70,6 +71,7 @@ class WebSocketService extends ChangeNotifier {
       if (data == "") {
         return;
       }
+      print(data);
       _channel!.sink.add(jsonEncode(data));
     }
   }

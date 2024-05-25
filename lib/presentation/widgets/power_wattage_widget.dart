@@ -43,52 +43,56 @@ class _PowerWattageWidgetState extends State<PowerWattageWidget> {
       iconColor = Colors.yellow;
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(0), // Example padding
+    return Container(
+      width: double.infinity,
       child: Card(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 20),
-            const Text(
-              "Power Wattage", // Display current slider value
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.w100,
+        margin: EdgeInsets.all(16.0),
+        elevation: 4.0,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'Wattage',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            RichText(
-              text: TextSpan(
-                children: [
-                  WidgetSpan(
-                    child: Icon(
-                      Icons.wind_power_outlined,
-                      color: iconColor,
-                      size: 40,
-                    ), // Customize icon & color
-                  ),
-                  TextSpan(
-                    text: " ${widget.watt.toStringAsFixed(2)}W",
-                    style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: iconColor),
-                  ),
-                ],
+              const SizedBox(height: 20),
+              RichText(
+                text: TextSpan(
+                  children: [
+                    WidgetSpan(
+                      child: Icon(
+                        Icons.wind_power_outlined,
+                        color: iconColor,
+                        size: 40,
+                      ), // Customize icon & color
+                    ),
+                    TextSpan(
+                      text: " ${widget.watt.toStringAsFixed(2)}W",
+                      style: TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                          color: iconColor),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            const SizedBox(height: 30),
-            KeyValueWidget(
-                label: 'Min', value: "${widget.min.toStringAsFixed(2)}W"),
-            KeyValueWidget(
-                label: 'Max', value: "${widget.max.toStringAsFixed(2)}W"),
-            KeyValueWidget(
-                label: 'Average',
-                value: "${widget.average.toStringAsFixed(2)}W"),
-            const SizedBox(height: 20),
-          ],
+              const SizedBox(height: 20),
+              const SizedBox(height: 30),
+              KeyValueWidget(
+                  label: 'Min', value: "${widget.min.toStringAsFixed(2)}W"),
+              KeyValueWidget(
+                  label: 'Max', value: "${widget.max.toStringAsFixed(2)}W"),
+              KeyValueWidget(
+                  label: 'Average',
+                  value: "${widget.average.toStringAsFixed(2)}W"),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

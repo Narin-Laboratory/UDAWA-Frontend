@@ -27,22 +27,22 @@ class _AICardWidgetState extends State<AICardWidget> {
     return Container(
       width: double.infinity,
       child: Card(
-        margin: EdgeInsets.all(16.0),
+        margin: const EdgeInsets.all(16.0),
         elevation: 4.0,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
+              const Text(
                 'AI Interpreter',
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 16.0),
-              if (widget.message.isNotEmpty) SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
+              if (widget.message.isNotEmpty) const SizedBox(height: 16.0),
               Text(
                 widget.message,
                 textAlign: TextAlign.justify,
@@ -57,7 +57,7 @@ class _AICardWidgetState extends State<AICardWidget> {
                 onPressed: widget.onPressed, // Call the callback function
                 icon: Icon(Icons.refresh),
                 label: const Text(
-                  "Generate",
+                  "Analyze",
                   style: TextStyle(fontSize: 18),
                 ),
               ),

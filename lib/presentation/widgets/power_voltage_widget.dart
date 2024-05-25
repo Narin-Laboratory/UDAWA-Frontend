@@ -43,52 +43,56 @@ class _PowerVoltageWidgetState extends State<PowerVoltageWidget> {
       iconColor = Color.fromARGB(255, 251, 255, 0);
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(0), // Example padding
+    return Container(
+      width: double.infinity,
       child: Card(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 20),
-            const Text(
-              "Power Voltage", // Display current slider value
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.w100,
+        margin: const EdgeInsets.all(16.0),
+        elevation: 4.0,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'Voltage',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            RichText(
-              text: TextSpan(
-                children: [
-                  WidgetSpan(
-                    child: Icon(
-                      Icons.power_sharp,
-                      color: iconColor,
-                      size: 40,
-                    ), // Customize icon & color
-                  ),
-                  TextSpan(
-                    text: " ${widget.volt.toStringAsFixed(2)}V",
-                    style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: iconColor),
-                  ),
-                ],
+              const SizedBox(height: 20),
+              RichText(
+                text: TextSpan(
+                  children: [
+                    WidgetSpan(
+                      child: Icon(
+                        Icons.power_sharp,
+                        color: iconColor,
+                        size: 40,
+                      ), // Customize icon & color
+                    ),
+                    TextSpan(
+                      text: " ${widget.volt.toStringAsFixed(2)}V",
+                      style: TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                          color: iconColor),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            const SizedBox(height: 30),
-            KeyValueWidget(
-                label: 'Min', value: "${widget.min.toStringAsFixed(2)}V"),
-            KeyValueWidget(
-                label: 'Max', value: "${widget.max.toStringAsFixed(2)}V"),
-            KeyValueWidget(
-                label: 'Average',
-                value: "${widget.average.toStringAsFixed(2)}V"),
-            const SizedBox(height: 20),
-          ],
+              const SizedBox(height: 20),
+              const SizedBox(height: 30),
+              KeyValueWidget(
+                  label: 'Min', value: "${widget.min.toStringAsFixed(2)}V"),
+              KeyValueWidget(
+                  label: 'Max', value: "${widget.max.toStringAsFixed(2)}V"),
+              KeyValueWidget(
+                  label: 'Average',
+                  value: "${widget.average.toStringAsFixed(2)}V"),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

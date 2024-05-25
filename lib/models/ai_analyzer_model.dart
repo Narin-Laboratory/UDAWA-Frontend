@@ -1,9 +1,7 @@
 class DamodarAIAnalyzer {
   final String response;
 
-  DamodarAIAnalyzer({
-    this.response = "",
-  });
+  DamodarAIAnalyzer({this.response = ""});
 
   factory DamodarAIAnalyzer.fromJson(Map<String, dynamic> data) {
     try {

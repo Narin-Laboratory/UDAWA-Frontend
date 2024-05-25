@@ -42,30 +42,11 @@ class _DamodarSettingsScreenState extends State<DamodarSettingsScreen> {
 
   bool _isGenerateButtonDisabled = false;
 
-  void _saveSettings() {}
-
-  void _handleGenerateButtonClick() {
-    if (!_isGenerateButtonDisabled) {
-      // Disable the button
-      /*setState(() {
-        _isConnectButtonDisabled = true;
-      });*/
-
-      // Perform your action here
-      // For example, make network request, process data, etc.
-
-      dynamic command = {"cmd": "DamodarAIAnalyzer"};
-      context
-          .read<DamodarAIAnalyzerBloc>()
-          .add(DamodarAIAnalyzerRequest(command: command));
-
-      // After the action is completed, enable the button again
-      /*Future.delayed(const Duration(seconds: 10), () {
-        setState(() {
-          _isConnectButtonDisabled = false;
-        });
-      });*/
-    }
+  void _saveSettings() {
+    dynamic command = {"cmd": "saveSettings"};
+    context
+        .read<DamodarSettingsBloc>()
+        .add(DamodarSettingsRequest(command: command));
   }
 
   @override
@@ -73,7 +54,14 @@ class _DamodarSettingsScreenState extends State<DamodarSettingsScreen> {
     super.initState();
 
     dynamic command = {
-      "cmd": "GetGHParams",
+      "cmd": "getConfig",
+    };
+    context
+        .read<DamodarSettingsBloc>()
+        .add(DamodarSettingsRequest(command: command));
+
+    command = {
+      "cmd": "getGHParams",
     };
     context
         .read<DamodarSettingsBloc>()
@@ -101,16 +89,22 @@ class _DamodarSettingsScreenState extends State<DamodarSettingsScreen> {
           setState(() {
             cfg = state.config;
             _hostnameController.text = state.config.hname;
+            _ssidController.text = state.config.ap;
+            _passwordController.text = "********";
           });
 
           context
               .read<DamodarSettingsBloc>()
               .add(DamodarSettingsResponse(deviceConfig: state.config));
-        } else if (state is WebSocketMessageReadyDeviceTelemetry) {
+        }
+
+        if (state is WebSocketMessageReadyDeviceTelemetry) {
           setState(() {
             devTel = state.telemetry;
           });
-        } else if (state is WebSocketMessageReadyGHParams) {
+        }
+
+        if (state is WebSocketMessageReadyGHParams) {
           setState(() {
             _cultivationTechnology.text = state.ghParams.cultivationTechnology;
             _plantType.text = state.ghParams.plantType;
