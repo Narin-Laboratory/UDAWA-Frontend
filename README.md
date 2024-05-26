@@ -1,6 +1,7 @@
 # UDAWA Frontend
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+
 
 A Flutter-based frontend application for the Universal Digital Agriculture Watering Assistant (UDAWA) Smart System. Connect locally to any UDAWA device variant and manage your agricultural irrigation with ease.
 
