@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:udawa/presentation/widgets/key_value_widget.dart';
 
-class WaterTDSWidget extends StatefulWidget {
-  final double tds;
+class PowerAmperageWidget extends StatefulWidget {
+  final double amp;
   final double min;
   final double max;
   final double average;
 
-  const WaterTDSWidget(
+  const PowerAmperageWidget(
       {Key? key,
-      required this.tds,
+      required this.amp,
       required this.min,
       required this.max,
       required this.average})
       : super(key: key);
 
   @override
-  _WaterTDSWidgetState createState() => _WaterTDSWidgetState();
+  _PowerAmperageWidgetState createState() => _PowerAmperageWidgetState();
 }
 
-class _WaterTDSWidgetState extends State<WaterTDSWidget> {
+class _PowerAmperageWidgetState extends State<PowerAmperageWidget> {
   @override
   void initState() {
     super.initState();
@@ -29,35 +29,35 @@ class _WaterTDSWidgetState extends State<WaterTDSWidget> {
   Widget build(BuildContext context) {
     dynamic iconColor = Colors.blue;
 
-    if (widget.tds < 100) {
-      iconColor = Colors.lightBlueAccent;
-    } else if (widget.tds >= 100 && widget.tds <= 200) {
-      iconColor = Colors.lightBlue;
-    } else if (widget.tds > 200 && widget.tds <= 400) {
-      iconColor = Colors.lightGreen;
-    } else if (widget.tds > 400 && widget.tds <= 600) {
+    if (widget.amp < 90) {
+      iconColor = Colors.blue;
+    } else if (widget.amp >= 90 && widget.amp <= 200) {
+      iconColor = Colors.blueAccent;
+    } else if (widget.amp > 200 && widget.amp <= 500) {
       iconColor = Colors.green;
-    } else if (widget.tds > 600 && widget.tds <= 800) {
-      iconColor = Colors.lime;
-    } else if (widget.tds > 800 && widget.tds <= 1200) {
-      iconColor = Colors.pink;
-    } else if (widget.tds > 1200) {
-      iconColor = Colors.purple;
+    } else if (widget.amp > 500 && widget.amp <= 1000) {
+      iconColor = Colors.lightGreen;
+    } else if (widget.amp > 1000 && widget.amp <= 1500) {
+      iconColor = Colors.red;
+    } else {
+      iconColor = Colors.yellow;
     }
 
     return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(0), // Example padding
-        child: Card(
+      width: double.infinity,
+      child: Card(
+        margin: const EdgeInsets.all(16.0),
+        elevation: 4.0,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 20),
               const Text(
-                "Water TDS", // Display current slider value
+                'Amperage',
                 style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w100,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 20),
@@ -66,13 +66,13 @@ class _WaterTDSWidgetState extends State<WaterTDSWidget> {
                   children: [
                     WidgetSpan(
                       child: Icon(
-                        Icons.water,
+                        Icons.flash_auto,
                         color: iconColor,
                         size: 40,
                       ), // Customize icon & color
                     ),
                     TextSpan(
-                      text: " ${widget.tds.toStringAsFixed(2)}ppm",
+                      text: " ${widget.amp.toStringAsFixed(2)}mA",
                       style: TextStyle(
                           fontSize: 40,
                           fontWeight: FontWeight.bold,
@@ -84,12 +84,12 @@ class _WaterTDSWidgetState extends State<WaterTDSWidget> {
               const SizedBox(height: 20),
               const SizedBox(height: 30),
               KeyValueWidget(
-                  label: 'Min', value: "${widget.min.toStringAsFixed(2)}ppm"),
+                  label: 'Min', value: "${widget.min.toStringAsFixed(2)}mA"),
               KeyValueWidget(
-                  label: 'Max', value: "${widget.max.toStringAsFixed(2)}ppm"),
+                  label: 'Max', value: "${widget.max.toStringAsFixed(2)}mA"),
               KeyValueWidget(
                   label: 'Average',
-                  value: "${widget.average.toStringAsFixed(2)}ppm"),
+                  value: "${widget.average.toStringAsFixed(2)}mA"),
               const SizedBox(height: 20),
             ],
           ),

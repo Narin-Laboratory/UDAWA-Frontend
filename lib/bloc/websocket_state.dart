@@ -47,4 +47,34 @@ final class WebSocketMessageReadyDeviceConfig extends WebSocketState {
   WebSocketMessageReadyDeviceConfig({required this.config});
 }
 
+final class WebSocketMessageReadyTemperatureSensor extends WebSocketState {
+  final TemperatureSensor temperatureSensor;
+
+  WebSocketMessageReadyTemperatureSensor({required this.temperatureSensor});
+}
+
+final class WebSocketMessageReadyECSensor extends WebSocketState {
+  final ECSensor ecSensor;
+
+  WebSocketMessageReadyECSensor({required this.ecSensor});
+}
+
+final class WebSocketMessageReadyPowerSensor extends WebSocketState {
+  final PowerSensor powerSensor;
+
+  WebSocketMessageReadyPowerSensor({required this.powerSensor});
+}
+
+final class WebSocketMessageReadyGHParams extends WebSocketState {
+  final GreenHouseParameters ghParams;
+
+  WebSocketMessageReadyGHParams({required this.ghParams});
+}
+
+final class WebSocketMessageReadyDamodarAIAnalyzer extends WebSocketState {
+  final DamodarAIAnalyzer damodarAIAnalyzer;
+
+  WebSocketMessageReadyDamodarAIAnalyzer({required this.damodarAIAnalyzer});
+}
+
 final class WebSocketDisconnect extends WebSocketState {}

@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:udawa/presentation/widgets/key_value_widget.dart';
 
-class WaterTemperatureWidget extends StatefulWidget {
-  final double celsius;
-  final double celsiusRaw;
+class WaterECWidget extends StatefulWidget {
+  final double ec;
+  final double ecRaw;
   final double min;
   final double max;
   final double average;
 
-  const WaterTemperatureWidget(
+  const WaterECWidget(
       {Key? key,
-      required this.celsius,
-      this.celsiusRaw = 0.0,
+      required this.ec,
+      this.ecRaw = 0.0,
       required this.min,
       required this.max,
       required this.average})
       : super(key: key);
 
   @override
-  _WaterTemperatureWidgetState createState() => _WaterTemperatureWidgetState();
+  _WaterECWidgetState createState() => _WaterECWidgetState();
 }
 
-class _WaterTemperatureWidgetState extends State<WaterTemperatureWidget> {
+class _WaterECWidgetState extends State<WaterECWidget> {
   @override
   void initState() {
     super.initState();
@@ -31,23 +31,26 @@ class _WaterTemperatureWidgetState extends State<WaterTemperatureWidget> {
   Widget build(BuildContext context) {
     dynamic iconColor = Colors.blue;
 
-    if (widget.celsius < 10) {
-      iconColor = Colors.deepPurple;
-    } else if (widget.celsius >= 10 && widget.celsius <= 17) {
-      iconColor = Colors.deepPurpleAccent;
-    } else if (widget.celsius > 17 && widget.celsius <= 23) {
-      iconColor = Colors.blue;
-    } else if (widget.celsius > 23 && widget.celsius <= 29) {
-      iconColor = Colors.red;
-    } else if (widget.celsius > 29 && widget.celsius <= 35) {
-      iconColor = Colors.orange;
-    } else if (widget.celsius > 35) {
-      iconColor = Colors.yellow;
+    if (widget.ec < 0.02) {
+      iconColor = Colors.lightBlueAccent;
+    } else if (widget.ec >= 0.02 && widget.ec <= 0.05) {
+      iconColor = Colors.lightBlue;
+    } else if (widget.ec > 0.05 && widget.ec <= 0.1) {
+      iconColor = Colors.lightGreen;
+    } else if (widget.ec > 0.1 && widget.ec <= 0.2) {
+      iconColor = Colors.green;
+    } else if (widget.ec > 0.2 && widget.ec <= 0.8) {
+      iconColor = Colors.lime;
+    } else if (widget.ec > 0.8 && widget.ec <= 1.2) {
+      iconColor = Colors.pink;
+    } else if (widget.ec > 1.2) {
+      iconColor = Colors.purple;
     }
+
     return Container(
       width: double.infinity,
       child: Card(
-        margin: EdgeInsets.all(16.0),
+        margin: const EdgeInsets.all(16.0),
         elevation: 4.0,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -55,7 +58,7 @@ class _WaterTemperatureWidgetState extends State<WaterTemperatureWidget> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Text(
-                'Water Temperature',
+                'Water EC',
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
@@ -67,13 +70,13 @@ class _WaterTemperatureWidgetState extends State<WaterTemperatureWidget> {
                   children: [
                     WidgetSpan(
                       child: Icon(
-                        Icons.thermostat,
+                        Icons.water,
                         color: iconColor,
                         size: 40,
                       ), // Customize icon & color
                     ),
                     TextSpan(
-                      text: " ${widget.celsius.toStringAsFixed(2)}°C",
+                      text: " ${widget.ec.toStringAsFixed(2)} μS/cm",
                       style: TextStyle(
                           fontSize: 40,
                           fontWeight: FontWeight.bold,
@@ -85,16 +88,18 @@ class _WaterTemperatureWidgetState extends State<WaterTemperatureWidget> {
               const SizedBox(height: 20),
               const SizedBox(height: 30),
               KeyValueWidget(
-                  label: 'Min', value: "${widget.min.toStringAsFixed(2)}°C"),
+                  label: 'Min',
+                  value: "${widget.min.toStringAsFixed(2)} μS/cm"),
               KeyValueWidget(
-                  label: 'Max', value: "${widget.max.toStringAsFixed(2)}°C"),
+                  label: 'Max',
+                  value: "${widget.max.toStringAsFixed(2)} μS/cm"),
               KeyValueWidget(
                   label: 'Average',
-                  value: "${widget.average.toStringAsFixed(2)}°C"),
-              widget.celsiusRaw != 0.0
+                  value: "${widget.average.toStringAsFixed(2)} μS/cm"),
+              widget.ecRaw != 0.0
                   ? KeyValueWidget(
                       label: 'Raw',
-                      value: "${widget.celsiusRaw.toStringAsFixed(2)}°C")
+                      value: "${widget.ecRaw.toStringAsFixed(2)} μS/cm")
                   : const Text(""),
               const SizedBox(height: 20),
             ],
