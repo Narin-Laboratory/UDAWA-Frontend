@@ -1,16 +1,32 @@
-# udawa
+# UDAWA Frontend
 
-A new Flutter project.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Getting Started
+A Flutter-based frontend application for the Universal Digital Agriculture Watering Assistant (UDAWA) Smart System. Connect locally to any UDAWA device variant and manage your agricultural irrigation with ease.
 
-This project is a starting point for a Flutter application.
+## Features
 
-A few resources to get you started if this is your first Flutter project:
+* **Local Device Connection:** Seamlessly connect to your UDAWA device over your local network.
+* **Intuitive Interface:** A user-friendly design for easy monitoring and control of your watering systems.
+* **Real-time Data:** View live sensor data, watering schedules, and system status.
+* **Remote Control:** Adjust watering schedules, activate/deactivate systems, and troubleshoot issues remotely.
+* **Multi-Device Support:** Compatible with all UDAWA device variants.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Screenshots
+![Architecture Design-App Screenshoot](https://github.com/Narin-Laboratory/UDAWA-Frontend/assets/64204327/72d5aab4-cdae-4ec4-9217-b22e7f319548)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+
+## Installation
+
+1. **Prerequisites:**
+   * Flutter SDK: [https://flutter.dev/docs/get-started/install](https://flutter.dev/docs/get-started/install)
+   * Android Studio or VS Code with Flutter extensions
+2. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/Narin-Laboratory/UDAWA-Frontend.git
+   ```
+3. **Run the Flutter Project**
+   ```bash
+   flutter run
+   ```
